@@ -1,0 +1,4 @@
+In powershell: 
+
+cd C:\Users\Tal Efraim\Downloads\realty-contracts-project\realty-contracts-project\mobile
+npx expo start --tunnel --clear

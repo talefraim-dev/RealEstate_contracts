@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "RealtyContracts",
+    "slug": "realty-contracts-mobile",
+    "scheme": "realtycontracts",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.talefraim.realtycontracts",
+        "versionCode": 1
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-web-browser"
+    ]
+  }
+}
