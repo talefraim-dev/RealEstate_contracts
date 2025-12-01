@@ -1,0 +1,14 @@
+Note that the APK file is not for PlayStore
+If you want to publish on playstore need to use the build command on step #4 instead #3
+
+
+1. Open CMD in C:\Users\Tal Efraim\Downloads\realty-contracts-project\realty-contracts-project\mobile
+
+2. if first time using npx on this device: 
+npx expo login
+
+3. npx eas build -p android --profile preview
+
+4. For PlayStore:
+npx eas build -p android --profile production
+

@@ -5,6 +5,9 @@
     "scheme": "realtycontracts",
     "version": "1.0.0",
     "orientation": "portrait",
+
+    "icon": "./assets/Nituv_app_icon.png",
+
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -16,7 +19,11 @@
     },
     "android": {
       "package": "com.talefraim.realtycontracts",
-        "versionCode": 1
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/Nituv_app_icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "web": {
       "bundler": "metro"
@@ -24,6 +31,11 @@
     "plugins": [
       "expo-asset",
       "expo-web-browser"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "8b33aedb-f04c-446b-af8b-69531bcfb335"
+      }
+    }
   }
 }

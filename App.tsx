@@ -1,22 +1,32 @@
 // App.tsx
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, I18nManager, Platform, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, Share } from 'react-native';
+import {
+  Alert,
+  I18nManager,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Share,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import Signature from 'react-native-signature-canvas'; // ← חדש
+import Signature from 'react-native-signature-canvas';
+
 
 I18nManager.allowRTL(true);
 I18nManager.forceRTL(true);
 
 // ------------------------- Config -------------------------
 const ESIGN_BACKEND = 'http://192.168.68.54:8000/esign';
-const APP_PIN = '2468';
-
 // ------------------------- Types -------------------------
 type Screen = 'menu' | 'editor' | 'list' | 'esign' | 'printList' | 'handSign'; // ← הוספנו handSign
 
@@ -59,15 +69,25 @@ const DEFAULT_FIELDS: ContractFields = {
 async function loadLogoFileUri(): Promise<string> {
   try {
     const asset = Asset.fromModule(require('./assets/Nituv_logo.png'));
-    await asset.downloadAsync(); // מבטיח localUri
-    const local = asset.localUri ?? asset.uri;
-    const b64 = await FileSystem.readAsStringAsync(local, { encoding: 'base64' });
+
+    // מבטיח שלוגו ירד למכשיר מקומית
+    await asset.downloadAsync();
+
+    // אם יש localUri – נשתמש בו, אחרת asset.uri
+    const localUri = asset.localUri || asset.uri;
+
+    const b64 = await FileSystem.readAsStringAsync(localUri, {
+      encoding: 'base64',   // גרסאות חדשות — מחרוזת, לא enum
+    });
+
     return `data:image/png;base64,${b64}`;
   } catch (e) {
     console.warn('Logo load failed:', e);
     return '';
   }
 }
+
+
 
 // ------------------------- HTML render -------------------------
 function renderContractHTML(f: ContractFields, logo: string) {
@@ -250,21 +270,6 @@ function HeaderBar({
       ) : null}
       <Text style={{ fontSize: 22, fontWeight: '800' }}>{title}</Text>
     </View>
-  );
-}
-
-function LoginScreen({ onLoggedIn }: { onLoggedIn: () => void }) {
-  const [pin, setPin] = useState('');
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f3f4f6' }}>
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <HeaderBar title="כניסה" />
-        <Card title="קוד PIN">
-          <Field label="הכנס PIN" value={pin} onChangeText={setPin} keyboardType="numeric" />
-          <Button title="כניסה" onPress={() => (pin === APP_PIN ? onLoggedIn() : Alert.alert('שגיאה', 'PIN שגוי'))} />
-        </Card>
-      </ScrollView>
-    </SafeAreaView>
   );
 }
 
@@ -541,7 +546,6 @@ function HandSignScreen({
 
 // ------------------------- Root -------------------------
 export default function App() {
-  const [authed, setAuthed] = useState(false);
   const [screen, setScreen] = useState<Screen>('menu');
   const [contracts, setContracts] = useState<StoredContract[]>([]);
   const [editing, setEditing] = useState<StoredContract | null>(null);
@@ -635,8 +639,6 @@ async function sendForESign(id: string) {
   }
 
   // --- ניווט ראשי
-  if (!authed) return <LoginScreen onLoggedIn={() => setAuthed(true)} />;
-
   if (screen === 'menu') {
     return (
       <MenuScreen
