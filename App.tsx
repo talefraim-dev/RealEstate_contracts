@@ -201,9 +201,16 @@ function renderContractHTML(f: ContractFields, logo: string) {
     ? (f.signatureB64.startsWith('data:') ? f.signatureB64.split(',')[1] : f.signatureB64)
     : '';
 
-  const dealTypeText = f.dealType || '__________________________________________________________________________';
-  const addressText = f.address || '_______________________________________________________________________________';
-  const feeText = f.feePerLot || '_________________________________________________________________';
+  const dealTypeText =
+    f.dealType || '__________________________________________________________________________';
+  const addressText =
+    f.address || '_______________________________________________________________________________';
+  const feeText =
+    f.feePerLot || '_________________________________________________________________';
+
+  // *** חדש: טמפלייט למחיר העסקה ***
+  const approxPriceText =
+    f.approxPrice || '_______________________________________________';
 
   return `<!doctype html>
 <html lang="he" dir="rtl">
@@ -217,8 +224,14 @@ function renderContractHTML(f: ContractFields, logo: string) {
     <h1>הזמנת שירותי תיווך במקרקעין</h1>
 
     <div class="center">
-      <div class="line">אני הח''מ: שם ומשפחה <span class="fill">${esc(f.fullName)}</span>     ת.ז: <span class="fill">${esc(f.idNumber)}</span></div>
-      <div class="line">שם חברה: <span class="fill">${esc(f.companyName)}</span>     חתימה וחותמת: <span class="fill">${esc(f.companyStamp)}</span></div>
+      <div class="line">אני הח''מ: שם ומשפחה <span class="fill">${esc(
+        f.fullName
+      )}</span>     ת.ז: <span class="fill">${esc(f.idNumber)}</span></div>
+      <div class="line">שם חברה: <span class="fill">${esc(
+        f.companyName
+      )}</span>     חתימה וחותמת: <span class="fill">${esc(
+        f.companyStamp
+      )}</span></div>
       <div class="line">מזמין/מזמינים בזאת שירותי תיווך במקרקעין מיועץ הנדל''ן</div>
       <div class="line">אילן אפרים<span class="sep"></span>ת.ז: 22764963<span class="sep"></span>רישיון: 25375</div>
       <div class="line">או כל מתווך מורשה שהוסמך על ידו לפעול לביצוע ההזמנה זו [להלן "המתווך"]</div>
@@ -226,7 +239,10 @@ function renderContractHTML(f: ContractFields, logo: string) {
 
     <div class="clause"><b>1.</b> סוג העסקה: ${esc(dealTypeText)}</div>
     <div class="between">בכתובת: ${esc(addressText)}</div>
-    <div class="clause"><b>2.</b> מחיר העסקה המוצע בקירוב הינו: ${esc(f.approxPrice)}</div>
+
+    <!-- סעיף 2 – עם טמפלייט ברירת מחדל אם לא הוזן מחיר -->
+    <div class="clause"><b>2.</b> מחיר העסקה המוצע בקירוב הינו: ${esc(approxPriceText)}</div>
+
     <div class="clause"><b>3.</b> אני/אנו מתחייב/מתחייבים, להודיע ולשתף את המתווך בכל התפתחות בעסקה שתתבצע ביני/ביננו, הקונה/הקונים, לבין בעלי הנכסים שהוצגו בפני/בפנינו [בין ישירות ובין ע''י צד ג']</div>
     <div class="clause"><b>4.</b> אני/אנו מתחייב/מתחייבים, לשלם למתווך את דמי התיווך מיד עם חתימת ההסכם המחייב. במקרה שאני, או שותפי את כל חברה שיש לי, או שיהיה לי בה חלק או מישהו מבני משפחתי או בא כוחי יחתום על ההסכם המחייב, או יקנה את אחד הנכסים שהוצגו לי/לנו ע''י המתווך [בין ישירות ובין ע''י צד ג']. בלא קשר לביצוע ההסכם בפועל או רישום בטאבו או לפרעון תמורת הנכס.</div>
     <div class="clause"><b>5.</b> למען הסר ספק, הקונה/הקונים יחויבו בדמי תיווך כאמור לעיל, גם בהסתמך על מסירת הכתובת הנ''ל ללא צורך בפעולה נוספת מצד המתווך וגם במידה שהסכם הקנייה/תמורות/קומבינציה יבוטל מכל סיבה שהיא לאחר כריתתו.</div>
